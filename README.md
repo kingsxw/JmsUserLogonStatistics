@@ -22,18 +22,18 @@
 
 ##### 选择预定服务器：
 
-![](pics\1.png)
+![](./pics/1.png)
 
 
 
-![](pics\2.png)
+![](./pics/2.png)
 
 
 
-![](pics\3.png)
+![](./pics/3.png)
 
 
 
 ##### 选择手动输入：
 
-![](pics\4.png)
+![](./pics/4.png)
