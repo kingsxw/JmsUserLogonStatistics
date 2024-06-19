@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Jumpserver A",
+    "baseUri": "http://192.168.1.1",
+    "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+    "name": "Jumpserver B",
+    "baseUri": "http://serverb.xxx.com",
+    "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+    "name": "Jumpserver C",
+    "baseUri": "https://serverc.xxx.com",
+    "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  }
+]
