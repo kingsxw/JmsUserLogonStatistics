@@ -46,4 +46,4 @@ jobs:
         prerelease: true
         body_path: release.txt
         files: |
-         JmsUserLogonStatistics/bin/Release/net9.0/publish/win-x64/*.exe
+         bin/Release/net9.0/publish/win-x64/*.exe
