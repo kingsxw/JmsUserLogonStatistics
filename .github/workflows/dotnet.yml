@@ -33,7 +33,18 @@ jobs:
       run: |
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -o ./JmsUserLogonStatistics -r win-x64 --self-contained true /p:PublishSingleFile=true
+        echo "status=success" >> release.txt
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish the package to GPR
-      run: dotnet nuget push JmsUserLogonStatistics/JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@master
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: test
+        tag_name: test
+        prerelease: true
+        body_path: release.txt
+        files: |
+         JmsUserLogonStatistics/JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
