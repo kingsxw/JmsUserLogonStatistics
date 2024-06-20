@@ -5,10 +5,17 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    branches: [ main ]
+    paths:
+    - 'github-actions/DotNet.GitHubAction/**'               # run on all changes to this dir
+    - '!github-actions/DotNet.GitHubAction/CODE_METRICS.md' # ignore this file
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'The reason for running the workflow'
+        required: true
+        default: 'Manual run'
+        
 jobs:
   build:
 
@@ -23,8 +30,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: |
+        cd DotNet.WebApp
+        dotnet build --configuration Release --no-restore
+        dotnet publish -c Release -o ./JmsUserLogonStatistics -r win-x64 --self-contained true /p:PublishSingleFile=true
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish the package to GPR
-      run: dotnet nuget push <my project>/bin/Release/*.exe
+      run: dotnet nuget push JmsUserLogonStatistics/bin/Release/*.exe
