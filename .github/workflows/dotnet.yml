@@ -36,4 +36,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish the package to GPR
-      run: dotnet nuget push JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
+      run: dotnet nuget push JmsUserLogonStatistics/JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
