@@ -47,3 +47,5 @@ jobs:
         body_path: release.txt
         files: |
          JmsUserLogonStatistics/JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
+         JmsUserLogonStatistics/bin/Release/net9.0/win-x64/*.exe
+         bin/Release/net9.0/win-x64/*.exe
