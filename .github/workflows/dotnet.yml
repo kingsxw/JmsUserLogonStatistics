@@ -1,0 +1,55 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - 'github-actions/DotNet.GitHubAction/**'               # run on all changes to this dir
+    - '!github-actions/DotNet.GitHubAction/CODE_METRICS.md' # ignore this file
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'The reason for running the workflow'
+        required: true
+        default: 'Manual run'
+        
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: |
+        dotnet build --configuration Release --no-restore
+        dotnet publish -c Release -o ./with-dotnet -r win-x64 --self-contained true /p:PublishSingleFile=true
+        dotnet publish -c Release -o ./without-dotnet -r win-x64 --no-self-contained /p:PublishSingleFile=true
+        mv ./with-dotnet/JmsUserLogonStatistics.exe ./with-dotnet/JmsUserLogonStatistics-with-dotnet.exe
+        echo "status=success" >> release.txt
+        echo ${pwd}
+        find . -name *.exe
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: win-x64 version
+        tag_name: 0.0.1
+        prerelease: true
+        body_path: release.txt
+        files: |
+         ./without-dotnet/JmsUserLogonStatistics.exe
+         ./with-dotnet/JmsUserLogonStatistics-with-dotnet.exe
+         ./without-dotnet/servers.json
