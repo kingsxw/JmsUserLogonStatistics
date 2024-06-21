@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.Design;
-using System.Security.Cryptography.X509Certificates;
+﻿using Sharprompt;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Sharprompt;
 
 namespace JmsUserLogonStatistics
 {
@@ -22,6 +20,7 @@ namespace JmsUserLogonStatistics
 
             string serverBaseUri, serverUri, serverName = default, serverToken = default;
             int year, month;
+            FullStatistic full = new FullStatistic();
             string uriSuffix = "/api/v1/audits/login-logs/";
             var defaultDate = DateTime.Now.AddMonths(-1);
 
@@ -35,20 +34,29 @@ namespace JmsUserLogonStatistics
 #else
                 var file = "servers.json";
 #endif
-
-                var fileString = File.ReadAllText(file);
-                var json = JsonNode.Parse(fileString).AsArray();
-                if (json.Count != 0)
+                if (File.Exists(file))
                 {
-                    serverList = json.Deserialize<List<ServerInfo>>();
-                    foreach (var i in serverList)
+                    var fileString = File.ReadAllText(file);
+                    var json = JsonNode.Parse(fileString).AsArray();
+                    if (json.Count != 0)
                     {
-                        serverNameList.Add(i.name);
+                        serverList = json.Deserialize<List<ServerInfo>>();
+                        foreach (var i in serverList)
+                        {
+                            serverNameList.Add(i.name);
+                        }
+                        serverNameList.Add("手动输入");
+                        serverName = Prompt.Select("选择Jumpserver服务器", serverNameList, defaultValue: serverNameList[0]);
+                    }
+                    else
+                    {
+                        serverName = "手动输入";
                     }
                 }
-
-                serverNameList.Add("手动输入");
-                serverName = Prompt.Select("选择Jumpserver服务器", serverNameList, defaultValue: serverNameList[0]);
+                else
+                {
+                    serverName = "手动输入";
+                }
 
                 if (serverName == "手动输入")
                 {
@@ -81,18 +89,51 @@ namespace JmsUserLogonStatistics
                 serverToken = args[1];
                 year = int.Parse(args[2]);
                 month = int.Parse(args[3]);
-               
+
             }
             serverUri = serverBaseUri + uriSuffix;
             var s = new Jms(serverUri, serverToken);
             await s.GetLogonStatisticsByMonth(year, month);
-            Console.ReadKey();
+            full = s.GetFullStatistic();
+
+            Console.WriteLine("\r\n\r\n");
+            var isSave = Prompt.Confirm("是否保存Excel文件?", defaultValue: true);
+            if (isSave)
+            {
+                Excel.OutXls(full);
+            }
+
+            Console.WriteLine("\r\n\r\n");
+            var isQuit = Prompt.Confirm("是否退出?", defaultValue: false);
+            if (isQuit)
+            {
+                Environment.Exit(0);
+            }
+            else
+            {
+                Console.Clear();
+                await Program.Main(Array.Empty<string>());
+            }
+            //Base.PrintColoredString("\r\n\r\n按y/Y保存excel文件，任意键忽略", ConsoleColor.Cyan);
+            //var key1 = Console.ReadKey(true);
+            //if (key1.KeyChar == ('y' | 'Y'))
+            //{
+            //    var title = (month.ToString().Length == 1) ? (year + "-0" + month) : (year + "-" + month);
+            //    var uri = new Uri(serverBaseUri);
+            //    Excel.OutXls(full.userStats, title, uri.Host + $"-{title}.xlsx");
+            //}
+
+            //Base.PrintColoredString("\r\n\r\n按q/Q退出，任意键回到主菜单", ConsoleColor.Cyan);
+            //var key2 = Console.ReadKey(true);
+            //if (key2.KeyChar == ('q' | 'Q'))
+            //{
+            //    Environment.Exit(0);
+            //}
+            //else
+            //{
+            //    Console.Clear();
+            //    await Program.Main(Array.Empty<string>());
+            //}
         }
-    }
-    internal class ServerInfo
-    {
-        public string name { get; set; }
-        public string baseUri { get; set; }
-        public string token { get; set; }
     }
 }

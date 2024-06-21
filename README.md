@@ -1,5 +1,17 @@
 # Jumpserver用户登录信息按月统计
 
+
+
+## 20240621
+
+1. 新增导出excel表格功能（附sample.xlsx）
+![](pics\5.png)
+2. 新增选择退出选项，不退出则自动回到初始菜单
+
+   
+
+
+
 ## 使用说明：
 
 1. 在servers.json里可以预先定义服务器信息，交互模式选择对应服务器即可，debug模式使用servers.dev.json文件
