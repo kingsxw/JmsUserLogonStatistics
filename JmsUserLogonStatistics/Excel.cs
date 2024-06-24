@@ -75,7 +75,7 @@ namespace JmsUserLogonStatistics
                 }
 
                 // 写入总计
-                worksheet.Cells[row1, 1].Value = "总计" + fs.userCount; // 在第一列写入"Total"
+                worksheet.Cells[row1, 1].Value = $"总计{fs.userCount}人"; // 在第一列写入"Total"
                 worksheet.Cells[row1, 2].Value = fs.logonCount; // 写入总计登录次数
                 worksheet.Cells[row1, 3].Value = fs.failCount; // 写入总计失败次数
 
@@ -87,7 +87,7 @@ namespace JmsUserLogonStatistics
                 row1 += 2;
                 worksheet.Cells[row1, 1, row1 + 2, 3].Merge = true;
                 worksheet.Cells[row1, 1, row1 + 2, 3].Value = $"本月堡垒机操作用户{fs.userCount}人，会话次数{fs.logonCount}次。" +
-                                                          $"有登陆失败记录用户{fs.userStats.Count(x => x.failCount != 0).ToString()}人，登录失败次数总计{fs.failCount}次。";
+                                                          $"其中有登陆失败记录用户{fs.userStats.Count(x => x.failCount != 0).ToString()}人，次数{fs.failCount}次，原因{fs.failStats.Count}种。";
 
                 // 给总计行加上黄色背景
                 worksheet.Cells[row1, 1, row1 + 2, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
@@ -106,7 +106,7 @@ namespace JmsUserLogonStatistics
                 // 计算总计
 
                 // 写入总计
-                worksheet.Cells[row2, 18].Value = "总计"; // 在第一列写入"Total"
+                worksheet.Cells[row2, 18].Value = $"总计{fs.failStats.Count}种"; // 在第一列写入"Total"
                 worksheet.Cells[row2, 19].Value = fs.failCount; // 写入总计登录次数
 
                 // 给总计行加上黄色背景
