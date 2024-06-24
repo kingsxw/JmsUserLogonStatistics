@@ -106,12 +106,13 @@ namespace JmsUserLogonStatistics
             Base.PrintColoredString("\r\n登录失败原因汇总:", ConsoleColor.Yellow);
             foreach (var reason in reasons)
             {
+                var reasonString = string.IsNullOrWhiteSpace(reason.Key.Trim()) ? "Jumpserver未记录原因" : reason.Key;
                 _fullStatistic.failStats.Add(new FailLogonStatistic
                 {
-                    reason = reason.Key,
+                    reason = reasonString,
                     count = reason.Count
                 });
-                Base.PrintColoredString(string.IsNullOrWhiteSpace(reason.Key.Trim()) ? "Jumpserver未记录原因" : reason.Key, reason.Count.ToString(), ConsoleColor.DarkGreen);
+                Base.PrintColoredString(reasonString, reason.Count.ToString(), ConsoleColor.DarkGreen);
             }
         }
     }
