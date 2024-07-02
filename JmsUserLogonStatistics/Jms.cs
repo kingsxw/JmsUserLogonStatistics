@@ -52,25 +52,25 @@ namespace JmsUserLogonStatistics
                 }
             }
             var logons =
-                from word in _fullStatistic.logs
-                group word.username by word.username
-                into g
+                from logonLog in _fullStatistic.logs
+                group logonLog.username by logonLog.username
+                into l
                 //where g.Count() > 1
-                orderby g.Count() descending
-                select new { g.Key, Count = g.Count() };
+                orderby l.Count() descending, l.Key ascending
+                select new { l.Key, Count = l.Count() };
             var errors =
                 from logonLog in _fullStatistic.logs
                 where logonLog.status == false
                 group logonLog.username by logonLog.username
-                into c
-                orderby c.Count() descending
-                select new { c.Key, Count = c.Count() };
+                into e
+                orderby e.Count() descending, e.Key ascending
+                select new { e.Key, Count = e.Count() };
             var reasons =
                 from logonLog in _fullStatistic.logs
                 where logonLog.status == false
                 group logonLog.reason by logonLog.reason
                 into r
-                orderby r.Count() descending
+                orderby r.Count() descending, r.Key ascending
                 select new { r.Key, Count = r.Count() };
 
             Console.Clear();
