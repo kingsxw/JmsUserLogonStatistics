@@ -13,8 +13,8 @@ namespace JmsUserLogonStatistics
         internal static void OutXls(FullStatistic fs)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            var users = fs.userStats.ToList();
-            var fails = fs.failStats.ToList();
+            var users = fs.userStats;
+            var fails = fs.failStats;
             var title = fs.year + "-" + fs.month;
             var fileName = fs.hostname + "-" + title + ".xlsx";
             //users = users.OrderBy(u => u.totalCount).ToList();
